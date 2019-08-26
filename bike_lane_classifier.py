@@ -130,9 +130,9 @@ for num, data in enumerate(test_data[:10]):
     print(model_out)
     
     if(np.argmax(model_out) == 1):
-        str_label = 'BIKE LANE'
-    else:
         str_label = 'NO BIKE LANE'
+    else:
+        str_label = 'BIKE LANE'
 
     y.imshow(orig, cmap='gray')
     plt.title(str_label)
