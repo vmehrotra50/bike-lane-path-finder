@@ -47,12 +47,13 @@ def process_test_data():
 
     for img in os.listdir(test_dir):
         path = os.path.join(test_dir, img)
-        if "DS_Store" not in path:
-            img = Image.open(path)
-            img = img.convert('L')
-            img = img.resize((img_size, img_size), Image.ANTIALIAS)
+        img_num = img.split('_')[2]
 
-            test_data.append( [np.array(img), np.array(img.split('_')[2])] )
+        img = Image.open(path)
+        img = img.convert('L')
+        img = img.resize((img_size, img_size), Image.ANTIALIAS)
+
+        test_data.append( [np.array(img), img_num] )
 
     shuffle(test_data)
     np.save('test_data.npy', test_data)
@@ -115,9 +116,8 @@ model.fit({'input': X}, {'targets': y}, n_epoch=100, validation_set=({'input': t
 test_data = process_test_data()
 fig = plt.figure()
 
-print("\n\n\n----------DONE------------")
 
-'''
+
 for num, data in enumerate(test_data[:10]):
     img_num = data[1]
     img_data = data[0]
@@ -125,5 +125,19 @@ for num, data in enumerate(test_data[:10]):
     y = fig.add_subplot(3, 4, num+1)
     orig = img_data
     data = img_data.reshape(img_size, img_size, 1)
-    model_out = model.predict
-'''
+    model_out = model.predict([data])[0]
+    
+    print(model_out)
+    
+    if(np.argmax(model_out) == 1):
+        str_label = 'BIKE LANE'
+    else:
+        str_label = 'NO BIKE LANE'
+
+    y.imshow(orig, cmap='gray')
+    plt.title(str_label)
+    y.axes.get_xaxis().set_visible(False)
+    y.axes.get_yaxis().set_visible(False)
+
+plt.show()
+print("\n\n\n----------DONE------------")
