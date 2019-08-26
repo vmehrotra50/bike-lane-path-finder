@@ -94,3 +94,36 @@ model = tflearn.DNN(convnet, tensorboard_verbose=3)
 
 
 # Data Splitting
+print('\n\n\n UP TO DATA SPLITTING')
+train = train_data[-90:]
+test = train_data[-90:]
+
+X = np.array([i[0] for i in train]).reshape(-1, img_size, img_size, 1)
+y = [i[1] for i in train]
+
+test_x = np.array([i[0] for i in test]).reshape(-1, img_size, img_size, 1)
+test_y = [i[1] for i in test]
+
+
+# Fitting the Model
+
+print('\n\n\n At model fitting !!!!!!!')
+model.fit({'input': X}, {'targets': y}, n_epoch=100, validation_set=({'input': test_x}, {'targets': test_y}), snapshot_step=50, show_metric=True, run_id='BIKE_LANE')
+
+###################
+
+test_data = process_test_data()
+fig = plt.figure()
+
+print("\n\n\n----------DONE------------")
+
+'''
+for num, data in enumerate(test_data[:10]):
+    img_num = data[1]
+    img_data = data[0]
+
+    y = fig.add_subplot(3, 4, num+1)
+    orig = img_data
+    data = img_data.reshape(img_size, img_size, 1)
+    model_out = model.predict
+'''
